@@ -162,3 +162,25 @@ $ DB_ENGINE_HOST=shopping-list-database-server bash -c '
 # by issuing:
 $ ./clean-container-artifacts.sh
 ```
+
+# How to use a Compose File to run a containerized version of the project
+
+The following command tells the Compose Provider to
+go over all the containers
+declared in the `services` section of the specified Compose File
+and build the container images for them:
+
+```bash
+$ podman-compose \
+   --file compose.yml \
+   build
+```
+
+Start a deployment:
+
+```bash
+$ podman-compose \
+   --env .env.compose \
+   --file compose.yml \
+   up
+```
