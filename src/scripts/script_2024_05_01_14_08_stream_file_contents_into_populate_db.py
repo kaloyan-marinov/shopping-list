@@ -67,10 +67,8 @@ if __name__ == "__main__":
     with app.app_context(), open(args.input_file, mode="r") as input_file:
         category_name = next(input_file)
         item_name = next(input_file)
-        # for category, item_name in itertools.batched(input_file, 2):
+
         while True:
-            # category = input_file.readline()
-            # item_name = input_file.readline()
             c_name = category_name.rstrip()
             i_name = item_name.rstrip()
             logger.info(c_name)
