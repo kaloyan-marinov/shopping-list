@@ -1,5 +1,6 @@
 from flask import request
-from src import app, Item
+
+from src import Item, app
 
 
 @app.route("/api/items")

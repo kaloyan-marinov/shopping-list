@@ -1,5 +1,4 @@
-from src import Item, Category, db, app
-
+from src import Category, Item, app, db
 
 if __name__ == "__main__":
     with app.app_context():
