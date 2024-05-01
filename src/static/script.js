@@ -21,7 +21,10 @@ const grid = new gridjs.Grid({
       [1, 2].includes(cellIndex) ? cell : null,
   },
   sort: true,
-  pagination: true,
+  pagination: {
+    enabled: true,
+    limit: 160,
+  },
 });
 
 grid.render(divForTable);
