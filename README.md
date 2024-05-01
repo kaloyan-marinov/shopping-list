@@ -8,6 +8,8 @@ $ source venv/bin/activate
 (venv) $ pip install --upgrade pip
 (venv) $ pip install -r requirements.txt
 
+(venv) $ pre-commit install
+
 (venv) $ PYTHONPATH=. \
     FLASK_APP=src \
         flask db upgrade
