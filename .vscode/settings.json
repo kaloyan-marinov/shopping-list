@@ -3,15 +3,7 @@
         88, 100
     ],
 
-    "python.defaultInterpreterPath": "venv/bin/python",
-    
-    "python.testing.pytestEnabled": true,
-    "python.testing.unittestEnabled": false,
-    
-    "[python]": {
-      "editor.defaultFormatter": "ms-python.black-formatter",
-      "editor.formatOnSave": true
-    },
+
 
     // Controls if suggestions should be accepted the 'Enter' key
     // - in addition to via the 'Tab' key.
@@ -19,5 +11,24 @@
     "editor.acceptSuggestionOnEnter": "off",
     // Controls if suggestions should be accepted via the ';' and ')' keys
     // - in addition to via the 'Tab' key.
-    "editor.acceptSuggestionOnCommitCharacter": false
+    "editor.acceptSuggestionOnCommitCharacter": false,
+
+
+
+    "python.defaultInterpreterPath": "venv/bin/python",
+    
+    "python.testing.pytestEnabled": true,
+    "python.testing.unittestEnabled": false,
+
+    "[python]": {
+      "editor.defaultFormatter": "ms-python.black-formatter",
+      "editor.formatOnSave": true
+    },
+
+
+
+    "[html]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode",
+      "editor.formatOnSave": true
+    }
 }

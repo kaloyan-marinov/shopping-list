@@ -1,0 +1,42 @@
+<html>
+  <head>
+    <title>Shopping List</title>
+    <link
+      href="https://unpkg.com/gridjs/dist/theme/mermaid.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div>
+      <h1>Shopping List >> Items</h1>
+      <hr />
+      <div id="table"></div>
+    </div>
+    <script src="https://unpkg.com/gridjs/dist/gridjs.umd.js"></script>
+    <script>
+      new gridjs.Grid({
+        columns: [
+          { id: "id", name: "ID" },
+          { id: "name", name: "Name", sort: false },
+          { id: "category", name: "Category" },
+        ],
+        server: {
+          url: "/api/items?for_backend=false",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          then: (results) => {
+            console.log(results);
+            return results.items;
+          },
+        },
+        search: {
+          selector: (cell, rowIndex, cellIndex) =>
+            [1, 2].includes(cellIndex) ? cell : null,
+        },
+        sort: true,
+        pagination: true,
+      }).render(document.getElementById("table"));
+    </script>
+  </body>
+</html>
