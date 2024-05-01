@@ -126,6 +126,20 @@ shopping-list $ podman build \
    --tag image-shopping-list:${HYPHENATED_YYYY_MM_DD_HH_MM} \
    .
 
+# Optionally, populate the database with some data:
+$ podman run \
+    --name c-s-l \
+    --network network-shopping-list \
+    --env-file .env \
+    --env DB_ENGINE_HOST=shopping-list-database-server \
+    -it \
+    --rm \
+    --mount type=bind,src=<absolute-path-on-the-host-to-repos/shopping-list/src/scripts/>,target=/src/scripts/ \
+    --entrypoint=/bin/bash \
+    image-shopping-list:${HYPHENATED_YYYY_MM_DD_HH_MM}
+root@28fc57dd3f09:/# PYTHONPATH=. \
+    python src/scripts/script_2024_05_01_10_03_populate_db.py
+
 $ DB_ENGINE_HOST=shopping-list-database-server bash -c '
    podman run \
       --name container-shopping-list \
