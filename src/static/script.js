@@ -3,8 +3,8 @@ const divForTable = document.getElementById("table");
 const grid = new gridjs.Grid({
   columns: [
     { id: "id", name: "ID" },
-    { id: "name", name: "Name", sort: false },
     { id: "category", name: "Category" },
+    { id: "name", name: "Name", sort: false },
   ],
   server: {
     url: "/api/items?for_backend=false",
