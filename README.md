@@ -93,3 +93,72 @@ Did not find any relations.
 # (c) start serving the application:
 (venv) $ python run_dev_server.py
 ```
+
+# How to run a containerized version of the project
+
+```bash
+$ podman network create network-shopping-list
+```
+
+```bash
+$ podman volume create volume-shopping-list-postgres
+
+$ DB_ENGINE_HOST=shopping-list-database-server bash -c '
+   podman run \
+      --name container-shopping-list-postgres \
+      --network network-shopping-list \
+      --network-alias ${DB_ENGINE_HOST} \
+      --mount type=volume,source=volume-shopping-list-postgres,destination=/var/lib/postgresql/data \
+      --env-file=.env \
+      --env 'DB_ENGINE_HOST' \
+      --detach \
+      postgres:15.1 \
+   '
+```
+
+```bash
+$ export HYPHENATED_YYYY_MM_DD_HH_MM=2024-05-01-19-32
+```
+
+```bash
+shopping-list $ podman build \
+   --file Containerfile \
+   --tag image-shopping-list:${HYPHENATED_YYYY_MM_DD_HH_MM} \
+   .
+
+# Optionally, populate the database with some data:
+$ podman run \
+    --name c-s-l \
+    --network network-shopping-list \
+    --env-file .env \
+    --env DB_ENGINE_HOST=shopping-list-database-server \
+    -it \
+    --rm \
+    --mount type=bind,src=<absolute-path-on-the-host-to-repos/shopping-list/src/scripts/>,target=/src/scripts/ \
+    --entrypoint=/bin/bash \
+    image-shopping-list:${HYPHENATED_YYYY_MM_DD_HH_MM}
+root@28fc57dd3f09:/# PYTHONPATH=. \
+    python src/scripts/script_2024_05_01_10_03_populate_db.py
+
+$ DB_ENGINE_HOST=shopping-list-database-server bash -c '
+   podman run \
+      --name container-shopping-list \
+      --network network-shopping-list \
+      --network-alias shopping-list-web-application \
+      --env-file .env \
+      --env 'DB_ENGINE_HOST' \
+      --publish 8000:5000 \
+      --detach \
+      image-shopping-list:${HYPHENATED_YYYY_MM_DD_HH_MM} \
+   '
+
+# Launch another terminal instance
+# and, in it,
+# you may issue the requests that are documented at the end of the previous section.
+
+# Stop running all containers,
+# remove the created volume,
+# and remove the created network
+# by issuing:
+$ ./clean-container-artifacts.sh
+```
