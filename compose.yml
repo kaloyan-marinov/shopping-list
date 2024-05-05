@@ -1,57 +1,42 @@
-# https://duckduckgo.com/?t=ffab&q=mysql+container+Authentication+plugin+%27caching_sha2_password%27+cannot+be+loaded&atb=v273-1&ia=web
-#
-#   https://stackoverflow.com/questions/49194719/authentication-plugin-caching-sha2-password-cannot-be-loaded
-#   https://stackoverflow.com/questions/49963383/authentication-plugin-caching-sha2-password
-#
-#   https://dev.mysql.com/doc/refman/8.0/en/caching-sha2-pluggable-authentication.html
-#
-#   https://github.com/docker-library/mysql/issues/419#issuecomment-385323901
-#
-#   
-
 version: "3.7"
 
 services:
-  service-mysql:
-    image: mysql:8.0.26
-    container_name: ${DB_ENGINE_HOSTNAME:?env var cannot be unset or empty}
+  service-postgres:
+    image: postgres:15.1
+    container_name: ${DB_ENGINE_HOST:?env var cannot be unset or empty}
     volumes:
-      - volume-journal-keeper-mysql:/var/lib/mysql
-    command: --default-authentication-plugin=mysql_native_password
+      - volume-shopping-list-postgres:/var/lib/postgresql/data
+    # command: --default-authentication-plugin=mysql_native_password
     restart: always
     environment:
-      - MYSQL_RANDOM_ROOT_PASSWORD=yes
-      - MYSQL_DATABASE=${DB_ENGINE_DATABASE:?env var cannot be unset or empty}
-      - MYSQL_USER=${DB_ENGINE_USERNAME:?env var cannot be unset or empty}
-      - MYSQL_PASSWORD=${DB_ENGINE_PASSWORD:?env var cannot be unset or empty}
+      # - MYSQL_RANDOM_ROOT_PASSWORD=yes
+      - POSTGRES_DB=${POSTGRES_DB:?env var cannot be unset or empty}
+      - POSTGRES_USER=${POSTGRES_USER:?env var cannot be unset or empty}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:?env var cannot be unset or empty}
   
-  service-backend:
+  service-web-application:
     build:
       context: .
-      dockerfile: Dockerfile.backend
-      target: build-stage
-    image: image-journal-keeper-backend:build-stage-2021-09-23-08-54
-    container_name: container-journal-keeper-backend-build-stage
+      dockerfile: Containerfile
+      # target: build-stage
+    image: image-shopping-list:2024-05-01-19-32
+    container_name: container-shopping-list
     depends_on:
-      - service-mysql
+      - service-postgres
     environment:
       - SECRET_KEY=${SECRET_KEY:?env var cannot be unset or empty}
-      - DATABASE_TYPE=${DB_ENGINE_TYPE:?env var cannot be unset or empty}
-      - DATABASE_HOSTNAME=${DB_ENGINE_HOSTNAME:?env var cannot be unset or empty}
-      - DATABASE_PORT=${DB_ENGINE_PORT:?env var cannot be unset or empty}
-      - DATABASE_NAME=${DB_ENGINE_DATABASE:?env var cannot be unset or empty}
-      - DATABASE_USERNAME=${DB_ENGINE_USERNAME:?env var cannot be unset or empty}
-      - DATABASE_PASSWORD=${DB_ENGINE_PASSWORD:?env var cannot be unset or empty}
-    command: 
-      ["./scripts/apply-db-migrations.sh"]
-  
-  service-frontend:
-    build:
-      context: .
-      dockerfile: Dockerfile.frontend
-      target: build-stage
-    image: image-journal-keeper-frontend:build-stage-2021-09-23-08-54
-    container_name: container-journal-keeper-frontend-build-stage
+      # - DATABASE_TYPE=${DB_ENGINE_TYPE:?env var cannot be unset or empty}
+      - DB_ENGINE_HOST=${DB_ENGINE_HOST:?env var cannot be unset or empty}
+      - DB_ENGINE_PORT=${DB_ENGINE_PORT:?env var cannot be unset or empty}
+      - POSTGRES_DB=${POSTGRES_DB:?env var cannot be unset or empty}
+      - POSTGRES_USER=${POSTGRES_USER:?env var cannot be unset or empty}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:?env var cannot be unset or empty}
+    # command: 
+    #   ["./scripts/apply-db-migrations.sh"]
+    expose:
+      - "5000"
+    ports:
+      - "5000:5000"
 
 volumes:
-  volume-journal-keeper-mysql:
+  volume-shopping-list-postgres:

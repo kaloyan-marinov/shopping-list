@@ -10,6 +10,8 @@ while true; do
     sleep 5
 done
 
+PYTHONPATH=. python src/scripts/script_2024_05_01_10_03_populate_db.py
+
 exec gunicorn \
     -b :5000 \
     --access-logfile - \

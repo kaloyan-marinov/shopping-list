@@ -171,16 +171,34 @@ declared in the `services` section of the specified Compose File
 and build the container images for them:
 
 ```bash
+$ cp \
+   .env.template \
+   .env.compose
+
+# Fill out the contents of `.env.` according to the instructions therein.
+```
+
+```bash
 $ podman-compose \
-   --file compose.yml \
-   build
+    --env-file .env.compose \
+    --file compose.yml \
+    build
 ```
 
 Start a deployment:
 
 ```bash
 $ podman-compose \
-   --env .env.compose \
-   --file compose.yml \
-   up
+    --env-file .env.compose \
+    --file compose.yml \
+    up
+```
+
+Stop a deployment:
+
+```bash
+$ podman-compose \
+    --env-file .env.compose \
+    --file compose.yml \
+    down
 ```
